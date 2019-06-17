@@ -17,7 +17,7 @@ namespace Bangazon.Models
         public DateTime DateCreated {get;set;}
 
         [Required]
-        [StringLength(255)]
+        [StringLength(255, ErrorMessage="Please shorten the product description to 255 characters")]
         public string Description { get; set; }
 
         [Required]
@@ -28,7 +28,7 @@ namespace Bangazon.Models
         [DisplayFormat(DataFormatString = "{0:C}")]
         public double Price { get; set; }
 
-        [Required]
+        [Required (ErrorMessage ="Please add Quantity")]
         public int Quantity { get; set; }
 
         [Required]
@@ -42,6 +42,7 @@ namespace Bangazon.Models
 
         [Required]
         public ApplicationUser User { get; set; }
+        
 
         [Required]
         [Display(Name="Product Category")]
