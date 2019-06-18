@@ -29,19 +29,17 @@ namespace Bangazon.Controllers
         [Authorize]
         public async Task<IActionResult> Index(string searchQuery)
         {
-            //var applicationDbContext = _context.Product.Include(p => p.ProductType).Include(p => p.User);
-            ApplicationUser user = await GetCurrentUserAsync();
-            List<Product> productList = await _context.Product.ToListAsync();
+            var products = from p in _context.Product select p;
 
-            if (searchQuery != null)
+            if (!String.IsNullOrEmpty(searchQuery))
             {
-                // .Contains() is case sensitive, we should normalize the search query to make it case insensitive
-                productList = productList.Where(p => p.Title.Contains(searchQuery)).ToList();
+                products = products.Where(p => p.Title.Contains(searchQuery) || p.City.Contains(searchQuery));
+                    
             }
+            ApplicationUser user = await GetCurrentUserAsync();
+            var applicationDbContext = _context.Product.Include(p => p.ProductType).Include(p => p.User);
 
-
-            //return View(await applicationDbContext.ToListAsync());
-            return View(productList);
+            return View(await products.ToListAsync());
         }
 
         // GET: Products/Details/5
