@@ -27,10 +27,20 @@ namespace Bangazon.Controllers
 
         // GET: Products
         [Authorize]
-        public async Task<IActionResult> Index()
+        //Added paramater for string query for search bar <- if you check layout.cshtml you'll see a searchbar with the name 'searchQuery'
+        public async Task<IActionResult> Index(string searchQuery)
         {
+            var products = from p in _context.Product select p;
+            //ifStatement to check if searchQuery = Product
+            if (!String.IsNullOrEmpty(searchQuery))
+            {
+                products = products.Where(p => p.Title.Contains(searchQuery) || p.City.Contains(searchQuery));
+                    
+            }
+            ApplicationUser user = await GetCurrentUserAsync();
             var applicationDbContext = _context.Product.Include(p => p.ProductType).Include(p => p.User);
-            return View(await applicationDbContext.ToListAsync());
+
+            return View(await products.ToListAsync());
         }
 
         // GET: Products/Details/5
