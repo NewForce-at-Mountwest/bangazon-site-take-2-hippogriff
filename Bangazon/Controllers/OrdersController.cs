@@ -179,50 +179,51 @@ namespace Bangazon.Controllers
         }
 
         // Add product to order
-        //[HttpGet]
-        //public async Task<IActionResult> AddProductToOrder(int id)
-        //{
-        //    ApplicationUser user = await GetCurrentUserAsync();
+        [HttpGet]
+        public async Task<IActionResult> AddProductToOrder(int id)
+        {
+            ApplicationUser user = await GetCurrentUserAsync();
 
-        //    var product = await _context.Product.FirstOrDefaultAsync(p => p.ProductId == id);
+            var product = await _context.Product.FirstOrDefaultAsync(p => p.ProductId == id);
 
-        //    List<Order> orderList = await _context.Order.Where(o => o.UserId == user.Id).ToListAsync();
+            List<Order> orderList = await _context.Order.Where(o => o.UserId == user.Id).ToListAsync();
 
-        //    Order order = new Order()
-        //    {
-        //        DateCreated = DateTime.Now,
-        //        UserId = user.Id
-        //    };
+            Order order = new Order()
+            {
+                DateCreated = DateTime.Now,
+                UserId = user.Id
+            };
 
-        //    if (orderList.Any(o => o.PaymentTypeId == null))
-        //    {
-        //        Order currentOrder = orderList.Where(o => o.PaymentTypeId == null).FirstOrDefault();
-        //        OrderProduct orderproduct = new OrderProduct()
-        //        {
-        //            ProductId = id,
-        //            OrderId = currentOrder.OrderId
-        //        };
+            if (orderList.Any(o => o.PaymentTypeId == null))
+            {
+                Order currentOrder = orderList.Where(o => o.PaymentTypeId == null).FirstOrDefault();
+                OrderProduct orderproduct = new OrderProduct()
+                {
+                    ProductId = id,
+                    OrderId = currentOrder.OrderId
+                };
 
-        //        orderproduct.OrderId = currentOrder.OrderId;
-        //        _context.Add(orderproduct);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    else
-        //    {
-        //        OrderProduct orderproduct = new OrderProduct()
-        //        {
-        //            ProductId = id,
-        //            OrderId = order.OrderId
-        //        };
-        //        _context.Add(order);
-        //        _context.Add(orderproduct);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-    
-        //    }
+                orderproduct.OrderId = currentOrder.OrderId;
+                _context.Add(orderproduct);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                OrderProduct orderproduct = new OrderProduct()
+                {
+                    ProductId = id,
+                    OrderId = order.OrderId
+                };
+                _context.Add(order);
+                _context.Add(orderproduct);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
 
-        //}
+            }
        
+
+        }
+
     }
 }
