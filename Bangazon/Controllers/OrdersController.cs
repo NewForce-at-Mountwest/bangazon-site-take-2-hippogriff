@@ -180,9 +180,9 @@ namespace Bangazon.Controllers
 
         // Add product to order
         [HttpGet]
-        public async Task<IActionResult> AddProductToOrder(int id)
+        public async Task<IActionResult> AddProductToOrder([FromRoute] int id)
         {
-            ApplicationUser user = await GetCurrentUserAsync();
+            var user = await GetCurrentUserAsync();
 
             var product = await _context.Product.FirstOrDefaultAsync(p => p.ProductId == id);
 
@@ -210,20 +210,22 @@ namespace Bangazon.Controllers
             }
             else
             {
+                _context.Add(order);
+                await _context.SaveChangesAsync();
                 OrderProduct orderproduct = new OrderProduct()
                 {
                     ProductId = id,
                     OrderId = order.OrderId
                 };
-                _context.Add(order);
+                
                 _context.Add(orderproduct);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
 
             }
-       
 
+            
         }
-
+        
     }
 }
